@@ -21,6 +21,7 @@ const createHandshakeHandler = (dispatch) => (socket, config) => {
 }
 
 const createMessageHandler = (dispatch) => (socket) => {
+    let changeBuffer = []
     socket.onmessage = (evt) => {
 
         const data = JSON.parse(evt.data)
@@ -29,7 +30,8 @@ const createMessageHandler = (dispatch) => (socket) => {
                 dispatch(setBooksSnapshot(data[1]))
                 // console.log(`snapshot: ${JSON.stringify(data)}`);
             } else if (Array.isArray(data[1])) {
-                dispatch(setBooksChange([data[1]]))
+                // dispatch(setBooksChange([data[1]]))
+                changeBuffer.push(data[1]);
                 // console.log(`change: ${JSON.stringify(data)}`);
             } else {
                 // maybe heartbreak
@@ -46,13 +48,21 @@ const createMessageHandler = (dispatch) => (socket) => {
             
         }
     };
+    const updateIntervalId = setInterval(() => {
+        dispatch(setBooksChange(changeBuffer));
+        changeBuffer = [];
+    }, 100)
+    return () => {
+        clearInterval(updateIntervalId);
+    }
 }
 
 let currentSocket = null
+let handlerCleanup = null
 
 export const bookRemoteDataCtrl = ({ dispatch, getState }, message) => {
     const handleMessages = createMessageHandler(dispatch);
-    const initialHanshake = createHandshakeHandler(dispatch);
+    const initialHandshake = createHandshakeHandler(dispatch);
     switch (message.type) {
         case CONNECT_BOOKS_CMD: {
             if (currentSocket) {
@@ -61,13 +71,16 @@ export const bookRemoteDataCtrl = ({ dispatch, getState }, message) => {
             }
             currentSocket = new WebSocket('wss://api-pub.bitfinex.com/ws/2');
             const state = getState();
-            initialHanshake(currentSocket, state.config);
-            handleMessages(currentSocket);
+            initialHandshake(currentSocket, state.config);
+            handlerCleanup = handleMessages(currentSocket);
             dispatch(connectBooksStart());
             break;
 
         }
         case DISCONNECT_BOOKS_CMD: {
+            if (handlerCleanup) {
+                handlerCleanup()
+            }
             if (!currentSocket) {
                 dispatch(connectFail(ABSENT_CONNECTION));
                 break
