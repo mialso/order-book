@@ -1,9 +1,9 @@
 import React from 'react';
-import { ConnectedOrderBooks } from './OrderBooks';
+import { ConnectedOrderBook } from './OrderBook';
 
 export const App = () => (
     <>
-        <h1>Order Books</h1>
-        <ConnectedOrderBooks />
+        <h1>Order Book</h1>
+        <ConnectedOrderBook />
     </>
 )

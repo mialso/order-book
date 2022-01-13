@@ -64,7 +64,7 @@ export const OrderBooks = ({ bidsByPrice, asksByPrice}) => (
     </div>
 )
 
-export const ConnectedOrderBooks = connect(
+export const ConnectedOrderBook = connect(
     (state) => ({
         bidsByPrice: state.byPrice.bids,
         asksByPrice: state.byPrice.asks,
