@@ -1,4 +1,4 @@
-import { BOOKS_SNAPSHOT_DOC, BOOKS_CHANGE_DOC } from './message';
+import { BOOKS_SNAPSHOT_DOC, BOOKS_CHANGE_DOC, ORDER_TOTAL_DOC } from './message';
 
 export const initialState = {
     byPrice: {},
@@ -6,7 +6,7 @@ export const initialState = {
 
 export const orderItemFromChange = (data) => {
     const [price, count, amount] = data;
-    return { price, count, amount };
+    return { price, count, amount, total: 0 };
 }
 
 export const createByPriceFromSnapshot = (payload) => {
@@ -23,13 +23,34 @@ export const createByPriceFromSnapshot = (payload) => {
 
 export const updateByPriceFromChange = (payload) => (byPrice) => {
     return payload.reduce(
-        (byPrice, changeItem) => {
+        (acc, changeItem) => {
             const [price] = changeItem;
             return {
-                ...byPrice,
+                ...acc,
                 [price]: orderItemFromChange(changeItem),
             };
 
+        },
+        byPrice,
+    );
+}
+
+export const updateByPriceFromTotal = (payload) => (byPrice) => {
+    return Object.keys(payload).reduce(
+        (acc, price) => {
+            const item = byPrice[price];
+            if (!item) {
+                return acc
+            }
+            const newTotal = payload[price]
+            if (item.total === newTotal) {
+                return acc;
+            }
+
+            return {
+                ...acc,
+                [price]: { ...item, total: newTotal },
+            };
         },
         byPrice,
     );
@@ -49,6 +70,14 @@ export const orderReducer = (state = initialState, action) => {
                 ...state,
                 byPrice: updateByPriceFromChange(action.payload)(state.byPrice),
             }
+        }
+        case ORDER_TOTAL_DOC: {
+            const nextByPrice = updateByPriceFromTotal(action.payload)(state.byPrice);
+            if (nextByPrice === state.byPrice) {
+                return state;
+            }
+            
+            return { ...state, byPrice: nextByPrice };
         }
         default: return state;
     }

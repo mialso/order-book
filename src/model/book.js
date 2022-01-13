@@ -30,7 +30,6 @@ const createMessageHandler = (dispatch) => (socket) => {
                 dispatch(setBooksSnapshot(data[1]))
                 // console.log(`snapshot: ${JSON.stringify(data)}`);
             } else if (Array.isArray(data[1])) {
-                // dispatch(setBooksChange([data[1]]))
                 changeBuffer.push(data[1]);
                 // console.log(`change: ${JSON.stringify(data)}`);
             } else {

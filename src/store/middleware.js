@@ -1,4 +1,5 @@
 import { bookRemoteDataCtrl } from '../model/book';
+import { totalCtrl } from '../model/total';
 
 export function connectMiddleware(controller) {
     return (store) => (next) => (message) => {
@@ -9,4 +10,5 @@ export function connectMiddleware(controller) {
 
 export const middlewares = [
     bookRemoteDataCtrl,
+    totalCtrl,
 ].map(connectMiddleware);
