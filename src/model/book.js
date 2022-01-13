@@ -13,7 +13,7 @@ const createHandshakeHandler = (dispatch) => (socket, config) => {
             event: 'subscribe',
             channel: 'book',
             symbol: config.pair,
-            prec: 'P2',
+            prec: 'P0',
             freq: 'F0',
         }));
         dispatch(connectSuccess());
@@ -28,10 +28,13 @@ const createMessageHandler = (dispatch) => (socket) => {
             if (isSnapshot(data)) {
                 dispatch(setBooksSnapshot(data[1]))
                 // console.log(`snapshot: ${JSON.stringify(data)}`);
-            } else {
+            } else if (Array.isArray(data[1])) {
                 dispatch(setBooksChange([data[1]]))
                 // console.log(`change: ${JSON.stringify(data)}`);
+            } else {
+                // maybe heartbreak
             }
+
         } else {
             switch (data.event) {
                 case 'subscribed': {

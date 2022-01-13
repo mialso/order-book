@@ -8,10 +8,13 @@ export const initialState = {
 export const askCompareNumbers = (a, b) => (a - b);
 export const descCompareNumbers = (a, b) => (b - a);
 
+const isAsk = (amount) => (amount < 0)
+const isBid = (amount) => (amount > 0)
+
 export const sortedAsksFromSnapshot = (data) => data.reduce(
         (asks, changeItem) => {
             const [ price, _count, amount ] = changeItem;
-            if (amount < 0) {
+            if (isAsk(amount)) {
                 asks.push(price)
             }
             return asks
@@ -22,13 +25,47 @@ export const sortedAsksFromSnapshot = (data) => data.reduce(
 export const sortedBidsFromSnapshot = (data) => data.reduce(
         (asks, changeItem) => {
             const [ price, _count, amount ] = changeItem;
-            if (amount > 0) {
+            if (isBid(amount)) {
                 asks.push(price)
             }
             return asks
         },
         [],
     ).sort(descCompareNumbers);
+
+export const sortedAsksFromChange = (data) => (prevAsks) => data.reduce(
+    (nextAsks, changeItem) => {
+        const [price, count, amount] = changeItem;
+        if (isAsk(amount) && !nextAsks.includes(price)) {
+            return nextAsks.concat(price).sort(askCompareNumbers);
+        }
+        if (isBid(amount) && nextAsks.includes(price)) {
+            return nextAsks.filter(item => (item !== price));
+        }
+        if (!count && nextAsks.includes(price)) {
+            return nextAsks.filter(item => (item !== price));
+        }
+        return nextAsks;
+    },
+    prevAsks,
+)
+
+export const sortedBidsFromChange = (data) => (prevBids) => data.reduce(
+    (nextBids, changeItem) => {
+        const [price, count, amount] = changeItem;
+        if (isBid(amount) && !nextBids.includes(price)) {
+            return nextBids.concat(price).sort(descCompareNumbers);
+        }
+        if (isAsk(amount) && nextBids.includes(price)) {
+            return nextBids.filter(item => (item !== price));
+        }
+        if (!count && nextBids.includes(price)) {
+            return nextBids.filter(item => (item !== price));
+        }
+        return nextBids;
+    },
+    prevBids,
+)
 
 export const byPriceReducer = (state = initialState, action) => {
     switch (action.type) {
@@ -40,6 +77,15 @@ export const byPriceReducer = (state = initialState, action) => {
             };
         }
         case BOOKS_CHANGE_DOC: {
+            const nextAsks = sortedAsksFromChange(action.payload)(state.asks);
+            const nextBids = sortedBidsFromChange(action.payload)(state.bids);
+            if (nextAsks !== state.asks || nextBids !== state.bids) {
+                return {
+                    ...state,
+                    bids: nextBids,
+                    asks: nextAsks,
+                };
+            }
             return state;
         }
         default: return state;
