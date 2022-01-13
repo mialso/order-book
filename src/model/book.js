@@ -1,6 +1,6 @@
 import {
     connectFail, connectSuccess, connectSubscribed, connectBooksStart,
-    setBooksSnapshot, setBooksChange,
+    setBooksSnapshot, setBooksChange, disconnectSuccess,
     CONNECT_BOOKS_CMD, DISCONNECT_BOOKS_CMD,
 } from './message';
 import { DUPLICATE_CONNECTION, ABSENT_CONNECTION } from './constant';
@@ -27,10 +27,10 @@ const createMessageHandler = (dispatch) => (socket) => {
         if (Array.isArray(data)) {
             if (isSnapshot(data)) {
                 dispatch(setBooksSnapshot(data[1]))
-                console.log(`snapshot: ${JSON.stringify(data)}`);
+                // console.log(`snapshot: ${JSON.stringify(data)}`);
             } else {
                 dispatch(setBooksChange([data[1]]))
-                console.log(`change: ${JSON.stringify(data)}`);
+                // console.log(`change: ${JSON.stringify(data)}`);
             }
         } else {
             switch (data.event) {
@@ -71,6 +71,7 @@ export const bookRemoteDataCtrl = ({ dispatch, getState }, message) => {
             }
             currentSocket.close();
             currentSocket = null;
+            dispatch(disconnectSuccess());
         }
         default: break;
     }

@@ -34,7 +34,7 @@ export const connectSubscribed = (data) => ({
     payload: data,
 });
 export const disconnectSuccess = () => ({
-    type: CONNECT_SUCCESS_EVT,
+    type: DISCONNECT_SUCCESS_EVT,
 });
 
 export const setBooksSnapshot = (data) => ({
