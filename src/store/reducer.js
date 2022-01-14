@@ -1,10 +1,11 @@
 import { combineReducers } from 'redux';
-import { configReducer } from '../model/config';
+import { controlReducer } from '../model/control/reducer';
+import { CONTROL_KEY } from '../model/control/constant';
 import { byPriceReducer } from '../model/byPrice';
 import { orderReducer } from '../model/order';
 
 export const rootReducer = combineReducers({
-    config: configReducer,
+    [CONTROL_KEY]: controlReducer,
     order: orderReducer,
     byPrice: byPriceReducer,
 });

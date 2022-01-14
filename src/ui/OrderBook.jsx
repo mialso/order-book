@@ -1,28 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { connectBooks, disconnectBooks } from '../model/message';
-
-export const PairTitle = ({ pair }) => (
-    <span>current pair: {pair}</span>
-)
-
-export const StatusBar = ({ config, connect, disconnect }) => (
-    <>
-        <div><PairTitle pair={config.pair} /></div>
-        <div>
-            <span>connection: {config.connectStatus}</span>
-        </div>
-        <button type='button' onClick={connect} disabled={config.connectStatus !== 'DISCONNECTED'}>Connect</button>
-        <button type='button' onClick={disconnect} disabled={config.connectStatus !== 'SUBSCRIBED'}>Disconnect</button>
-    </>
-)
-
-export const ConnectedStatusBar = connect(
-    (state) => ({
-        config: state.config,
-    }),
-    { connect: connectBooks, disconnect: disconnectBooks },
-)(StatusBar)
+import { ConnectedStatusBar } from './Control';
 
 export const OrderBidRow = ({ count, amount, total, price }) => (
     <div style={{display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>

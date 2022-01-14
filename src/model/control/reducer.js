@@ -1,12 +1,15 @@
 import {
     CONNECT_BOOKS_START_EVT, CONNECT_ERROR_EVT, CONNECT_SUBSCRIBED_EVT, DISCONNECT_SUCCESS_EVT,
+    PRECISION_CHANGE_DOC,
 } from './message'
 
 export const initialState = {
     pair: 'tBTCUSD',
     connectStatus: 'DISCONNECTED',
+    precision: 'P1',
 }
-export const configReducer = (state = initialState, action) => {
+
+export const controlReducer = (state = initialState, action) => {
     switch (action.type) {
         case CONNECT_BOOKS_START_EVT: {
             return {
@@ -32,6 +35,14 @@ export const configReducer = (state = initialState, action) => {
                 connectStatus: 'DISCONNECTED',
             };
         }
+        case PRECISION_CHANGE_DOC: {
+            const nextValue = action.payload;
+            if (state.precision === nextValue) {
+                return state
+            }
+            return { ...state, precision: nextValue }
+        }
         default: return state
     }
 }
+

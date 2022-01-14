@@ -1,21 +1,23 @@
 import { NETWORK_OFFLINE_EVT, NETWORK_ONLINE_EVT } from '../service/network';
+import { setBooksSnapshot, setBooksChange } from './message';
 import {
     connectFail, connectSuccess, connectSubscribed, connectBooksStart,
-    setBooksSnapshot, setBooksChange, disconnectSuccess,
+    disconnectSuccess,
     CONNECT_BOOKS_CMD, DISCONNECT_BOOKS_CMD,
-} from './message';
+} from './control/message';
+import { controlState } from './control/selector';
 
 import { DUPLICATE_CONNECTION, ABSENT_CONNECTION } from './constant';
 
 const isSnapshot = (data) => (data[0] && Array.isArray(data[1]) && Array.isArray(data[1][0]))
 
-const createHandshakeHandler = (dispatch) => (socket, config) => {
+const createHandshakeHandler = (dispatch) => (socket, control) => {
     currentSocket.onopen = () => {
         socket.send(JSON.stringify({
             event: 'subscribe',
             channel: 'book',
-            symbol: config.pair,
-            prec: 'P0',
+            symbol: control.pair,
+            prec: control.precision,
             freq: 'F0',
         }));
         dispatch(connectSuccess());
@@ -88,7 +90,7 @@ export const bookRemoteDataCtrl = ({ dispatch, getState }, message) => {
             currentSocket = new WebSocket('wss://api-pub.bitfinex.com/ws/2');
             const state = getState();
             // TODO: createErrorHandler()(currentSocket);
-            initialHandshake(currentSocket, state.config);
+            initialHandshake(currentSocket, controlState(state));
             handlerCleanup = handleMessages(currentSocket);
             dispatch(connectBooksStart());
             break;
