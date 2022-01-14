@@ -1,15 +1,3 @@
-.WidgetRow {
-    display: flex;
-    gap: 2rem;
-    width: 100%;
-}
-.OrderRow {
-    display: flex;
-    gap: 1rem;
-}
-.OrderColumn {
-    flex: 1;
-}
 .BidColumn {
     flex: 1 0 15%;
     text-align: right;

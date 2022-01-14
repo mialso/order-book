@@ -2,6 +2,8 @@ import { BOOKS_SNAPSHOT_DOC, BOOKS_CHANGE_DOC, ORDER_TOTAL_DOC } from './message
 import { round10 } from '../util/math';
 
 export const initialState = {
+    askTotal: 0,
+    bidTotal: 0,
     byPrice: {},
 }
 
@@ -73,12 +75,13 @@ export const orderReducer = (state = initialState, action) => {
             }
         }
         case ORDER_TOTAL_DOC: {
-            const nextByPrice = updateByPriceFromTotal(action.payload)(state.byPrice);
+            const { totalsByPrice, askTotal, bidTotal } = action.payload;
+            const nextByPrice = updateByPriceFromTotal(totalsByPrice)(state.byPrice);
             if (nextByPrice === state.byPrice) {
                 return state;
             }
             
-            return { ...state, byPrice: nextByPrice };
+            return { ...state, byPrice: nextByPrice, askTotal, bidTotal };
         }
         default: return state;
     }

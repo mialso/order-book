@@ -1,0 +1,15 @@
+.TotalAnimation {
+    position: absolute;
+    z-index: 0;
+    top: 1.2rem;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+.AnimatedLeftColumn {
+    display: flex;
+    flex-direction: column;
+    height: fit-content;
+    align-items: end;
+}

@@ -1,0 +1,15 @@
+.WidgetRow {
+    display: flex;
+    gap: 2rem;
+    width: 100%;
+    height: 1.2rem;
+}
+.OrderRow {
+    display: flex;
+    gap: 1rem;
+    height: 1.2rem;
+}
+.OrderColumn {
+    flex: 1;
+}
+
