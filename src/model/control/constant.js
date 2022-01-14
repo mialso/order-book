@@ -1,1 +1,8 @@
 export const CONTROL_KEY = 'control';
+
+export const CONNECT_STATUS = {
+    DISCONNECTED: 'DISCONNECTED',
+    CONNECTING: 'CONNECTING',
+    SUBSCRIBED: 'SUBSCRIBED',
+    ERROR: 'ERROR',
+}

@@ -1,12 +1,14 @@
 import {
     CONNECT_BOOKS_START_EVT, CONNECT_ERROR_EVT, CONNECT_SUBSCRIBED_EVT, DISCONNECT_SUCCESS_EVT,
-    PRECISION_CHANGE_DOC,
+    PRECISION_CHANGE_DOC, PRECISION_PROGRESS_DOC, PRECISION_PROGRESS_DONE_EVT,
 } from './message'
+import { CONNECT_STATUS } from './constant';
 
 export const initialState = {
     pair: 'tBTCUSD',
-    connectStatus: 'DISCONNECTED',
+    connectStatus: CONNECT_STATUS.DISCONNECTED,
     precision: 'P1',
+    inProgress: null,
 }
 
 export const controlReducer = (state = initialState, action) => {
@@ -14,35 +16,43 @@ export const controlReducer = (state = initialState, action) => {
         case CONNECT_BOOKS_START_EVT: {
             return {
                 ...state,
-                connectStatus: 'CONNECTING',
+                connectStatus: CONNECT_STATUS.CONNECTING,
             };
         }
         case CONNECT_ERROR_EVT: {
             return {
                 ...state,
-                connectStatus: 'ERROR',
+                connectStatus: CONNECT_STATUS.ERROR,
             };
         }
         case CONNECT_SUBSCRIBED_EVT: {
             return {
                 ...state,
-                connectStatus: 'SUBSCRIBED',
+                connectStatus: CONNECT_STATUS.SUBSCRIBED,
             };
         }
         case DISCONNECT_SUCCESS_EVT: {
             return {
                 ...state,
-                connectStatus: 'DISCONNECTED',
+                connectStatus: CONNECT_STATUS.DISCONNECTED,
             };
         }
         case PRECISION_CHANGE_DOC: {
-            const nextValue = action.payload;
-            if (state.precision === nextValue) {
-                return state
+            return { ...state, precision: action.payload };
+        }
+        case PRECISION_PROGRESS_DOC: {
+            return { ...state, inProgress: { precision: action.payload }, precision: action.payload };
+        }
+        case PRECISION_PROGRESS_DONE_EVT: {
+            if (state.inProgress && state.inProgress.precision) {
+                return {
+                    ...state,
+                    inProgress: null,
+                    precision: state.inProgress.precision,
+                };
             }
-            return { ...state, precision: nextValue }
+            return { ...state, precision: nextValue };
         }
         default: return state
     }
 }
-

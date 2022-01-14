@@ -19,7 +19,12 @@ export const StatusBar = ({ control, connect, disconnect, changePrecision }) => 
         </div>
         <div>
             <span>select precision</span>
-            <select name='precision' value={control.precision} onChange={(evt) => changePrecision(evt.target.value)}>
+            <select
+                name='precision'
+                value={control.precision}
+                onChange={(evt) => changePrecision(evt.target.value)}
+                disabled={control.inProgress}
+            >
                 <option value='P0'>'P0'</option>
                 <option value='P1'>'P1'</option>
                 <option value='P2'>'P2'</option>

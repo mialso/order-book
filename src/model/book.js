@@ -66,8 +66,10 @@ const createMessageHandler = (dispatch) => (socket) => {
         }
     };
     const updateIntervalId = setInterval(() => {
-        dispatch(setBooksChange(changeBuffer));
-        changeBuffer = [];
+        if (changeBuffer.length > 0) {
+            dispatch(setBooksChange(changeBuffer));
+            changeBuffer = [];
+        }
     }, 100)
     return () => {
         clearInterval(updateIntervalId);

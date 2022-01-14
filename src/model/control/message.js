@@ -12,6 +12,8 @@ export const DISCONNECT_SUCCESS_EVT = 'evt/books/disconnect/success';
 
 export const PRECISION_CHANGE_CMD = 'cmd/control/precision/change';
 export const PRECISION_CHANGE_DOC = 'doc/control/precision/change';
+export const PRECISION_PROGRESS_DOC = 'doc/control/precision/progress';
+export const PRECISION_PROGRESS_DONE_EVT = 'evt/control/precision/progress/done';
 
 export const connectBooks = () => ({
     type: CONNECT_BOOKS_CMD,
@@ -41,6 +43,13 @@ export const disconnectSuccess = () => ({
 export const precisionChange = (value) => ({
     type: PRECISION_CHANGE_CMD,
     payload: value,
+});
+export const setPrecisionProgress = (value) => ({
+    type: PRECISION_PROGRESS_DOC,
+    payload: value,
+});
+export const setPrecisionProgressDone = () => ({
+    type: PRECISION_PROGRESS_DONE_EVT,
 });
 export const setPrecision = (value) => ({
     type: PRECISION_CHANGE_DOC,
