@@ -4,16 +4,14 @@ import { connectBooks, disconnectBooks, precisionChange } from '../model/control
 import { controlState } from '../model/control/selector';
 
 export const PairTitle = ({ pair }) => (
-    <span>current pair: {pair}</span>
+    <b>{pair}</b>
 )
 
-export const StatusBar = ({ control, connect, disconnect, changePrecision }) => (
-    <>
+export const StatusBar = ({ className, control, connect, disconnect, changePrecision }) => (
+    <div className={className} style={{justifyContent: 'space-between'}}>
         <div><PairTitle pair={control.pair} /></div>
         <div>
-            <span>connection: {control.connectStatus}</span>
-        </div>
-        <div>
+            <code>{control.connectStatus}</code>
             <button type='button' onClick={connect} disabled={control.connectStatus !== 'DISCONNECTED'}>Connect</button>
             <button type='button' onClick={disconnect} disabled={control.connectStatus !== 'SUBSCRIBED'}>Disconnect</button>
         </div>
@@ -33,7 +31,7 @@ export const StatusBar = ({ control, connect, disconnect, changePrecision }) => 
                 <option value='P5'>'P5'</option>
             </select>
         </div>
-    </>
+    </div>
 )
 
 export const ConnectedStatusBar = connect(

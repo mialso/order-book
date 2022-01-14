@@ -3,21 +3,23 @@ import { connect } from 'react-redux';
 import { ConnectedStatusBar } from './Control';
 import { controlInProgress } from '../model/control/selector';
 
+import styles from './OrderBook.css';
+
 export const OrderBidRow = ({ count, amount, total, price }) => (
-    <div style={{display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
-        <div>{count}</div>
-        <div style={{ minWidth: '150px', textAlign: 'center' }}>{amount}</div>
-        <div>{total}</div>
-        <div>{price}</div>
+    <div className={styles.OrderRow}>
+        <div className={styles.BidColumn}>{count}</div>
+        <div className={styles.BidColumn}>{amount}</div>
+        <div className={styles.BidColumn}>{total}</div>
+        <div className={styles.BidColumn}>{price}</div>
     </div>
 )
 
 export const OrderAskRow = ({ count, amount, total, price }) => (
-    <div style={{display: 'flex', gap: '10px' }}>
-        <div>{price}</div>
-        <div>{total}</div>
-        <div style={{ minWidth: '150px', textAlign: 'center' }}>{amount}</div>
-        <div>{count}</div>
+    <div className={styles.OrderRow}>
+        <div className={styles.AskColumn}>{price}</div>
+        <div className={styles.AskColumn}>{total}</div>
+        <div className={styles.AskColumn}>{amount}</div>
+        <div className={styles.AskColumn}>{count}</div>
     </div>
 )
 
@@ -29,14 +31,33 @@ export const ConnectedAskOrder = connect(
     (state, { price }) => state.order.byPrice[price],
 )(OrderAskRow)
 
-export const OrderBooks = ({ bidsByPrice, asksByPrice, inProgress }) => (
-    <div>
-        <ConnectedStatusBar />
-        <div style={{ display: 'flex', gap: '20px', width: '100%', color: inProgress ? 'lightgrey' : 'black' }}>
-            <div style={{ width: '50%' }}>
+export const AsksHeader = () => (
+    <div className={styles.OrderRow}>
+        <div className={styles.AskColumn}>PRICE</div>
+        <div className={styles.AskColumn}>TOTAL</div>
+        <div className={styles.AskColumn}>AMOUNT</div>
+        <div className={styles.AskColumn}>COUNT</div>
+    </div>
+)
+export const BidsHeader = () => (
+    <div className={styles.OrderRow}>
+        <div className={styles.BidColumn}>COUNT</div>
+        <div className={styles.BidColumn}>AMOUNT</div>
+        <div className={styles.BidColumn}>TOTAL</div>
+        <div className={styles.BidColumn}>PRICE</div>
+    </div>
+)
+
+export const OrderBooks = ({ className, bidsByPrice, asksByPrice, inProgress }) => (
+    <div className={className}>
+        <ConnectedStatusBar className={styles.WidgetRow}/>
+        <div className={styles.WidgetRow} style={{color: inProgress ? 'lightgrey' : 'black'}}>
+            <div className={styles.OrderColumn}>
+                <BidsHeader />
                 { bidsByPrice.map((price) => <ConnectedBidOrder key={price} price={price} />) }
             </div>
-            <div>
+            <div className={styles.OrderColumn}>
+                <AsksHeader />
                 { asksByPrice.map((price) => <ConnectedAskOrder key={price} price={price} />) }
             </div>
         </div>

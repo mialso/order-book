@@ -1,4 +1,5 @@
 import { BOOKS_SNAPSHOT_DOC, BOOKS_CHANGE_DOC, ORDER_TOTAL_DOC } from './message';
+import { round10 } from '../util/math';
 
 export const initialState = {
     byPrice: {},
@@ -6,7 +7,7 @@ export const initialState = {
 
 export const orderItemFromChange = (data) => {
     const [price, count, amount] = data;
-    return { price, count, amount, total: 0 };
+    return { price, count, amount: round10(amount, -4), total: 0 };
 }
 
 export const createByPriceFromSnapshot = (payload) => {
