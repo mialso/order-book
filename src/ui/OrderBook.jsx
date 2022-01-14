@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { ConnectedStatusBar } from './Control';
+import { controlInProgress } from '../model/control/selector';
 
 export const OrderBidRow = ({ count, amount, total, price }) => (
     <div style={{display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
@@ -28,10 +29,10 @@ export const ConnectedAskOrder = connect(
     (state, { price }) => state.order.byPrice[price],
 )(OrderAskRow)
 
-export const OrderBooks = ({ bidsByPrice, asksByPrice}) => (
+export const OrderBooks = ({ bidsByPrice, asksByPrice, inProgress }) => (
     <div>
         <ConnectedStatusBar />
-        <div style={{ display: 'flex', gap: '20px', width: '100%' }}>
+        <div style={{ display: 'flex', gap: '20px', width: '100%', color: inProgress ? 'lightgrey' : 'black' }}>
             <div style={{ width: '50%' }}>
                 { bidsByPrice.map((price) => <ConnectedBidOrder key={price} price={price} />) }
             </div>
@@ -46,5 +47,6 @@ export const ConnectedOrderBook = connect(
     (state) => ({
         bidsByPrice: state.byPrice.bids,
         asksByPrice: state.byPrice.asks,
+        inProgress: controlInProgress(state),
     }),
 )(OrderBooks);
